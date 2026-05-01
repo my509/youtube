@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải Video YouTube - Công Cụ Miễn Phí</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 20px 18px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-download {
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-info {
+            margin-bottom: 25px;
+        }
+
+        .video-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .format-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .format-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .format-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .format-btn i {
+            margin-right: 8px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            background: #ff4757;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        .note {
+            margin-top: 30px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            color: #856404;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 Tải Video YouTube</h1>
+            <p>Dán link video YouTube vào ô bên dưới để tải về</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 1.2em;">
+                    🔗
+                </span>
+                <input 
+                    type="text" 
+                    id="videoUrl" 
+                    placeholder="Dán link YouTube vào đây..."
+                    autocomplete="off"
+                >
+            </div>
+            <button class="btn-download" onclick="fetchVideoInfo()">
+                📥 Tải Video
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div>⏳</div>
+            <div>Đang xử lý video...</div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="result-section" id="resultSection">
+            <img class="video-thumbnail" id="videoThumbnail" src="" alt="Video Thumbnail">
+            <div class="video-info">
+                <div class="video-title" id="videoTitle"></div>
+            </div>
+            <div class="format-buttons" id="formatButtons"></div>
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Lưu ý quan trọng:</strong><br>
+            • Công cụ này sử dụng API bên thứ ba để tải video<br>
+            • Chỉ tải video khi bạn có quyền hoặc video được phép tải xuống<br>
+            • Tôn trọng bản quyền và điều khoản sử dụng của YouTube<br>
+            • Không sử dụng cho mục đích thương mại khi chưa được phép
+        </div>
+    </div>
+
+    <script>
+        // Hàm trích xuất ID video từ URL YouTube
+        function extractVideoId(url) {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/watch\?.*&v=)([^&\n?#]+)/,
+                /youtube\.com\/shorts\/([^&\n?#]+)/
+            ];
+
+            for (let pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            return null;
+        }
+
+        // Hàm hiển thị lỗi
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Hàm fetch thông tin video
+        async function fetchVideoInfo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const loading = document.getElementById('loading');
+            const resultSection = document.getElementById('resultSection');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Reset
+            resultSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Validate URL
+            if (!url) {
+                showError('Vui lòng nhập URL video YouTube!');
+                return;
+            }
+
+            const videoId = extractVideoId(url);
+            if (!videoId) {
+                showError('URL YouTube không hợp lệ! Vui lòng kiểm tra lại.');
+                return;
+            }
+
+            // Show loading
+            loading.style.display = 'block';
+
+            try {
+                // Sử dụng API miễn phí để lấy thông tin video
+                const apiUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+                
+                // Thêm timeout để tránh treo request
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetch(apiUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error('Không thể kết nối đến máy chủ');
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error('Video không tồn tại hoặc đã bị xóa');
+                }
+
+                // Hiển thị thông tin video
+                document.getElementById('videoThumbnail').src = data.thumbnail_url || 
+                    `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                document.getElementById('videoTitle').textContent = data.title || 'Video YouTube';
+
+                // Tạo các nút tải về
+                const formatButtons = document.getElementById('formatButtons');
+                formatButtons.innerHTML = `
+                    <button class="format-btn" onclick="downloadVideo('${videoId}', 'mp4')">
+                        🎬 MP4 (Video)
+                    </button>
+                    <button class="format-btn" onclick="downloadVideo('${videoId}', 'mp3')">
+                        🎵 MP3 (Âm thanh)
+                    </button>
+                    <button class="format-btn" onclick="downloadVideo('${videoId}', '720p')">
+                        📺 720p
+                    </button>
+                    <button class="format-btn" onclick="downloadVideo('${videoId}', '1080p')">
+                        🖥️ 1080p
+                    </button>
+                `;
+
+                resultSection.style.display = 'block';
+                loading.style.display = 'none';
+
+            } catch (error) {
+                loading.style.display = 'none';
+                if (error.name === 'AbortError') {
+                    showError('Kết nối quá chậm, vui lòng thử lại!');
+                } else {
+                    showError('Có lỗi xảy ra: ' + error.message);
+                }
+            }
+        }
+
+        // Hàm tải video
+        function downloadVideo(videoId, format) {
+            // Đây là phương thức demo - trong thực tế cần API server-side
+            const downloadUrls = {
+                mp4: `https://www.youtube.com/watch?v=${videoId}`,
+                mp3: `https://www.youtube.com/watch?v=${videoId}`,
+                '720p': `https://www.youtube.com/watch?v=${videoId}`,
+                '1080p': `https://www.youtube.com/watch?v=${videoId}`
+            };
+
+            // Thông báo cho người dùng
+            alert(`🔔 Để tải video thực tế, bạn cần:\n\n` +
+                  `1. Sử dụng API trả phí như youtube-dl API\n` +
+                  `2. Hoặc cài đặt phần mềm youtube-dl trên máy tính\n` +
+                  `3. Dùng lệnh: youtube-dl https://www.youtube.com/watch?v=${videoId}\n\n` +
+                  `Video ID: ${videoId}\n` +
+                  `Định dạng: ${format}\n\n` +
+                  `Demo này chỉ hiển thị cách hoạt động của giao diện.`);
+
+            // Trong thực tế, bạn sẽ redirect đến URL tải về từ server
+            console.log(`Downloading video ${videoId} in format ${format}`);
+        }
+
+        // Cho phép nhấn Enter để tìm kiếm
+        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchVideoInfo();
+            }
+        });
+
+        // Auto-paste nếu có URL trong clipboard
+        window.addEventListener('load', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text.includes('youtube.com') || text.includes('youtu.be')) {
+                    document.getElementById('videoUrl').value = text;
+                    document.getElementById('videoUrl').focus();
+                }
+            } catch (err) {
+                // Clipboard trống hoặc không có quyền
+            }
+        });
+    </script>
+</body>
+</html>
